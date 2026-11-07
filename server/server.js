@@ -4,7 +4,7 @@ const cors = require('cors');
 require('dotenv').config();
 
 const app = express();
-
+const commentRoutes = require('./routes/commentRoutes');
 // Middleware
 app.use(cors());
 app.use(express.json()); 
@@ -16,7 +16,7 @@ const photoRoutes = require('./routes/photoRoutes');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/photos', photoRoutes);
-
+app.use('/api/photos', commentRoutes);
 // الاتصال بقاعدة البيانات
 const MONGODB_URI = process.env.MONGODB_URI;
 
