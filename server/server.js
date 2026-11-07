@@ -7,15 +7,22 @@ const app = express();
 
 // Middleware
 app.use(cors());
-app.use(express.json()); // لقراءة البيانات بصيغة JSON
-app.use('/uploads', express.static('uploads')); // لجعل الصور متاحة للعرض
+app.use(express.json()); 
+app.use('/uploads', express.static('uploads')); 
+
+// Routes
+const authRoutes = require('./routes/authRoutes');
+const photoRoutes = require('./routes/photoRoutes');
+
+app.use('/api/auth', authRoutes);
+app.use('/api/photos', photoRoutes);
 
 // الاتصال بقاعدة البيانات
 const MONGODB_URI = process.env.MONGODB_URI;
 
 mongoose.connect(MONGODB_URI)
   .then(() => console.log('MongoDB Connected Successfully'))
-  .catch((err) => console.error('❌ MongoDB Connection Error:', err));
+  .catch((err) => console.error('MongoDB Connection Error:', err));
 
 // مسار تجريبي للتأكد أن السيرفر يعمل
 app.get('/', (req, res) => {
