@@ -1,9 +1,14 @@
-import { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useState, useEffect, useContext } from 'react';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import CommentForm from '../components/CommentForm';
+import { AuthContext } from '../context/AuthContext';
+
 const PhotoDetail = () => {
-  const { id } = useParams(); // Get photo ID from URL
+  const { id } = useParams(); 
+  const { user } = useContext(AuthContext);  
+  const navigate = useNavigate();  
+  
   const [photo, setPhoto] = useState(null);
   const [comments, setComments] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -11,11 +16,9 @@ const PhotoDetail = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Fetch photo details
         const photoRes = await axios.get(`http://localhost:5000/api/photos/${id}`);
         setPhoto(photoRes.data);
         
-        // Fetch comments for this photo
         const commentsRes = await axios.get(`http://localhost:5000/api/photos/${id}/comments`);
         setComments(commentsRes.data);
       } catch (err) {
@@ -26,6 +29,18 @@ const PhotoDetail = () => {
     };
     fetchData();
   }, [id]);
+
+  const handleDelete = async () => {
+    if (!window.confirm('Are you sure you want to delete this photo?')) return;
+    try {
+      await axios.delete(`http://localhost:5000/api/photos/${id}`, {
+        data: { userId: user.userId } 
+      });
+      navigate('/gallery')
+    } catch (err) {
+      alert(err.response?.data?.message || 'Failed to delete photo');
+    }
+  };
 
   if (loading) return <h2 style={{ textAlign: 'center' }}>Loading...</h2>;
   if (!photo) return <h2 style={{ textAlign: 'center' }}>Photo not found</h2>;
@@ -47,6 +62,16 @@ const PhotoDetail = () => {
           <p style={{ color: '#666', fontSize: '0.9rem' }}>
             Uploaded by: {photo.userId?.firstName} {photo.userId?.lastName} on {new Date(photo.dateTime).toLocaleDateString()}
           </p>
+          
+          {/* زر الحذف - يظهر فقط إذا كان المستخدم هو صاحب الصورة */}
+          {user && photo.userId?._id === user.userId && (
+            <button 
+              onClick={handleDelete} 
+              style={{ padding: '8px 15px', backgroundColor: '#dc3545', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', marginTop: '10px' }}
+            >
+              Delete Photo
+            </button>
+          )}
         </div>
       </div>
 
@@ -71,9 +96,9 @@ const PhotoDetail = () => {
         )}
 
         <CommentForm 
-  photoId={id} 
-  onCommentAdded={(newComment) => setComments([...comments, newComment])} 
-/>
+          photoId={id} 
+          onCommentAdded={(newComment) => setComments([...comments, newComment])} 
+        />
       </div>
     </div>
   );
