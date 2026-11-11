@@ -7,18 +7,18 @@ const Navbar = () => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    logout(); // Clears user from state and localStorage
-    navigate('/login'); // Redirect to login page
+    logout(); 
+    navigate('/login'); 
   };
 
   return (
-    <nav style={{ display: 'flex', justifyContent: 'space-between', padding: '1rem', background: '#333', color: 'white' }}>
+    <nav style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', padding: '1rem', background: '#333', color: 'white', gap: '10px' }}>
       <div>
         <Link to="/" style={{ color: 'white', textDecoration: 'none', fontSize: '1.5rem', fontWeight: 'bold' }}>
           Alzikrayat
         </Link>
       </div>
-      <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+      <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', flexWrap: 'wrap' }}>
         <Link to="/gallery" style={{ color: 'white', textDecoration: 'none' }}>Gallery</Link>
         
         {user ? (
