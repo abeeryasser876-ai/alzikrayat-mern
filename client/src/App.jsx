@@ -4,6 +4,7 @@ import LoginRegister from './pages/LoginRegister';
 import Gallery from './pages/Gallery';
 import PhotoDetail from './pages/PhotoDetail';
 import Home from './pages/Home';
+import NotFound from './pages/NotFound';
 function App() {
   return (
     <Router>
@@ -14,6 +15,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<LoginRegister />} />
           <Route path="/photos/:id" element={<PhotoDetail />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </div>
     </Router>
